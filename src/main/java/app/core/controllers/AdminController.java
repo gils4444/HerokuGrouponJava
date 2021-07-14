@@ -25,8 +25,6 @@ import app.core.exception.CouponSystemException;
 import app.core.service.AdminService;
 import app.core.service.CustomerService;
 import app.core.utilities.JwtUtil;
-// my name is shobi dobi i love cookiesasdfasfafafadS
-// my name is shobi dobi i love cookiesasdfasfafafadS
 @RestController
 @RequestMapping("/admin")
 @CrossOrigin
