@@ -35,6 +35,8 @@ import app.core.utilities.JwtUtil;
 @RequestMapping("/company")
 @CrossOrigin
 public class CompanyController {
+	
+	//dxtgvubhjnmkl,;QWGRHDB
 
 	private CompanyService service;
 	private ConfigurableApplicationContext ctx;
