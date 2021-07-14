@@ -8,6 +8,10 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.4.3</version>
 		<relativePath /> <!-- lookup parent from repository -->
+		<!-- lookup parent from repository -->
+		<!-- lookup parent from repository -->
+		<!-- lookup parent from repository -->
+		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.gil</groupId>
 	<artifactId>Groupon-part2</artifactId>
@@ -15,7 +19,7 @@
 	<name>Groupon-part2</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
-		<java.version>15</java.version>
+		<java.version>11</java.version>
 	</properties>
 	<dependencies>
 
@@ -44,6 +48,7 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
 		<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
