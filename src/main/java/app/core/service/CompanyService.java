@@ -22,12 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 import app.core.entities.Company;
 import app.core.entities.Coupon;
 import app.core.entities.Coupon.Category;
-import app.core.entities.CouponImage;
 import app.core.exception.CouponSystemException;
 import app.core.repositories.CompanyRepository;
 import app.core.repositories.CouponRepository;
 import app.core.repositories.CustomerRepository;
-import app.core.service.menu.CompanyServiceMenu;
 
 @Service
 @Transactional
@@ -43,7 +41,6 @@ public class CompanyService extends ClientService {
 	public CompanyService(CompanyRepository companyRepository, CustomerRepository customerRepository,
 			CouponRepository couponRepository) {
 		super(companyRepository, customerRepository, couponRepository);
-		// TODO Auto-generated constructor stub
 	}
 
 	@PostConstruct
@@ -61,6 +58,12 @@ public class CompanyService extends ClientService {
 
 	public String storeFile(MultipartFile file) {
 		String fileName = file.getOriginalFilename();
+
+		System.out.println("getOriginalFilename " + file.getOriginalFilename());
+		System.out.println("getName " + file.getName());
+		System.out.println("getResource " + file.getResource());
+		System.out.println("getContentType " + file.getContentType());
+		System.out.println("getClass " + file.getClass());
 		if (fileName.contains("..")) {
 			throw new RuntimeException("file name contains ilegal caharacters");
 		}
@@ -74,6 +77,9 @@ public class CompanyService extends ClientService {
 		}
 	}
 
+//	https://i.ibb.co/xXcX2r5/fluffy-Dog.jpg
+//		https://i.ibb.co/f47Qnwq/clock-And-Wall.jpg
+
 	@Override
 	public boolean login(String email, String password) {
 		Company company = companyRepository.findByEmailIgnoreCaseAndPassword(email, password);
@@ -85,46 +91,12 @@ public class CompanyService extends ClientService {
 
 	}
 
-	public Coupon convertCouponImage(CouponImage couponImage) throws CouponSystemException {
-		System.out.println("convertCouponImageToCoupon");
-		System.out.println(couponImage);
+	public Coupon addCoupon(Coupon coupon) throws CouponSystemException {
+		System.out.println("1111111111111111111111111111111111");
+		validateCoupon(coupon);
+		System.out.println("222222222222222222222222222222222");
 		try {
-			LocalDate start = LocalDate.parse(couponImage.getStartDate().toString());
-			LocalDate end = LocalDate.parse(couponImage.getEndDate().toString());
-			Coupon coupon = new Coupon(couponImage.getCategory(), couponImage.getTitle(), couponImage.getDescription(),
-					start, end, couponImage.getAmount(), couponImage.getPrice(), null);
-			coupon.setId(couponImage.getId());
-			if (couponImage.getImage() != null) {
-				coupon.setImageName(storeFile(couponImage.getImage()));
-			}
-			// check if coupon is added or updated: add id = 0 | updated id != 0
-
-			// coupon is being added:
-			else if (coupon.getId() == 0) {
-				coupon.setImageName("no_image");
-			}
-			// coupon is being updated:
-			else {
-				Optional<Coupon> opt = couponRepository.findById(coupon.getId());
-				if (opt.isPresent()) {
-					coupon.setImageName(opt.get().getImageName());
-				}
-			}
-
-			return coupon;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new CouponSystemException("We have problem at convertCouponImage ", e);
-		}
-	}
-
-	public Coupon addCoupon(CouponImage couponImage) throws CouponSystemException {
-		try {
-
-			validateCoupon(couponImage);
-
 			System.out.println("=======================addCoupon================");
-			Coupon coupon = convertCouponImage(couponImage);
 			coupon.setCompany(getCompanyDetails());
 
 			if (!findByTitleAndCompanyId(coupon)) {
@@ -144,35 +116,32 @@ public class CompanyService extends ClientService {
 		}
 	}
 
-	public Coupon updateCoupon(CouponImage couponImage) throws CouponSystemException {
+	public Coupon updateCoupon(Coupon coupon) throws CouponSystemException {
+		validateCoupon(coupon);
 
-		validateCoupon(couponImage);
-
-		Coupon otherCoupon = convertCouponImage(couponImage);
-		otherCoupon.setCompany(getCompanyDetails());
-		System.out.println(otherCoupon);
-		if (findByTitleAndCompanyIdAndIdIsNot(otherCoupon))
+		coupon.setCompany(getCompanyDetails());
+		System.out.println(coupon);
+		if (findByTitleAndCompanyIdAndIdIsNot(coupon))
 			throw new CouponSystemException("There is already a coupon with the same title in this company");
 
-		Coupon coupon = findCouponById(otherCoupon.getId());
+		Coupon otherCoupon = findCouponById(coupon.getId());
 		if (coupon != null) {
 
 			if (coupon.getCompany().getId() != otherCoupon.getCompany().getId())
 				throw new CouponSystemException("you can't change the company id");
 
-			coupon.setAmount(otherCoupon.getAmount());
-			coupon.setCategory(otherCoupon.getCategory());
-			coupon.setDescription(otherCoupon.getDescription());
-			coupon.setEndDate(otherCoupon.getEndDate());
-			coupon.setImageName(otherCoupon.getImageName());
-			coupon.setPrice(otherCoupon.getPrice());
-			coupon.setStartDate(otherCoupon.getStartDate());
-			coupon.setTitle(otherCoupon.getTitle());
+			otherCoupon.setAmount(coupon.getAmount());
+			otherCoupon.setCategory(coupon.getCategory());
+			otherCoupon.setDescription(coupon.getDescription());
+			otherCoupon.setEndDate(coupon.getEndDate());
+			otherCoupon.setImageName(coupon.getImageName());
+			otherCoupon.setPrice(coupon.getPrice());
+			otherCoupon.setStartDate(coupon.getStartDate());
+			otherCoupon.setTitle(coupon.getTitle());
 
-			return couponRepository.save(coupon);
+			return couponRepository.save(otherCoupon);
 		}
-		throw new CouponSystemException(
-				"Problems at updateCoupon: Could not find coupon with id: " + otherCoupon.getId());
+		throw new CouponSystemException("Problems at updateCoupon: Could not find coupon with id: " + coupon.getId());
 	}
 
 	public void deleteCoupon(int couponId) throws CouponSystemException {
@@ -249,7 +218,12 @@ public class CompanyService extends ClientService {
 	 * @param coupon
 	 * @throws CouponSystemException
 	 */
-	public void validateCoupon(CouponImage coupon) throws CouponSystemException {
+	public void validateCoupon(Coupon coupon) throws CouponSystemException {
+		System.out.println("validateCoupon");
+		coupon.convertDatesFromStringToLocalDate();
+		System.out.println("5");
+		
+		System.out.println(coupon.toString());
 
 		if (coupon.getPrice() < 0) {
 			throw new CouponSystemException("price cannot be less than zero");
@@ -257,93 +231,12 @@ public class CompanyService extends ClientService {
 		if (coupon.getAmount() < 1) {
 			throw new CouponSystemException("Amount cannot be less than one");
 		}
-		LocalDate end = LocalDate.parse(coupon.getEndDate());
+		LocalDate end = coupon.getEndDate();
 		if (end.isBefore(LocalDate.now()))
 			throw new CouponSystemException("End date cannot be in the past");
-		LocalDate start = LocalDate.parse(coupon.getStartDate());
+		LocalDate start = coupon.getStartDate();
 		if (end.isBefore(start))
 			throw new CouponSystemException("End date cannot be before the start date");
 	}
 
-	public static void menu(CompanyService service, Scanner scanner) throws CouponSystemException {
-
-		boolean flag = true;
-		int num = 0;
-
-		while (flag) {
-			System.out.println("for adding a coupon press ..................................1");
-			System.out.println("for update a coupon press ..................................2");
-			System.out.println("for delete coupon press ....................................3");
-			System.out.println("for watch all coupons of company press .....................4");
-			System.out.println("for view coupons from specific category of company press ...5");
-			System.out.println("for watch all coupons of company until max price ...........6");
-			System.out.println("for watch company data .....................................7");
-			System.out.println("for exit press .............................................8\n");
-
-			try {
-				num = Integer.parseInt(scanner.nextLine());
-			} catch (NumberFormatException e) {
-				num = -1;
-			}
-			System.out.println();
-			switch (num) {
-			case 1: {
-				// service.addCoupon(CompanyServiceMenu.addCouponMenu(service.getCompanyDetails(),scanner));
-				System.out.println("hey");
-				break;
-			}
-			case 2: {
-				break;
-			}
-			case 3: {
-				try {
-					service.deleteCoupon(CompanyServiceMenu.deleteCouponMenu(scanner));
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 4: {
-				try {
-					CompanyServiceMenu.watchAllCouponsMenu(service);
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 5: {
-				try {
-					CompanyServiceMenu.watchCouponByCategoryMenu(service, scanner);
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 6: {
-				try {
-					CompanyServiceMenu.watchCouponByMaxPriceMenu(service, scanner);
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 7: {
-				try {
-					CompanyServiceMenu.getCompanyDetails(service);
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 8: {
-				flag = false;
-				break;
-			}
-			default:
-				System.out.println("enter numbers between 1-8\n");
-			}
-
-		}
-		System.out.println("exit company menu\n");
-	}
 }

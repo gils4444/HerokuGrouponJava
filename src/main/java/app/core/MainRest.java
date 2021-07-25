@@ -7,7 +7,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import app.core.loginManager.LoginManager;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@SpringBootApplication	
+@SpringBootApplication
 @EnableSwagger2
 
 public class MainRest {

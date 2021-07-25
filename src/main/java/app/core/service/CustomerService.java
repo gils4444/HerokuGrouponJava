@@ -3,7 +3,6 @@ package app.core.service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 
 import javax.transaction.Transactional;
 
@@ -18,7 +17,6 @@ import app.core.exception.CouponSystemException;
 import app.core.repositories.CompanyRepository;
 import app.core.repositories.CouponRepository;
 import app.core.repositories.CustomerRepository;
-import app.core.service.menu.CustomerServiceMenu;
 
 @Service
 @Transactional
@@ -111,90 +109,4 @@ public class CustomerService extends ClientService {
 		return couponRepository.findByAmountGreaterThanAndIdIsNot(amount, customerID);
 	}
 
-	public static void menu(CustomerService service, Scanner scanner) throws CouponSystemException {
-
-		boolean flag = true;
-		int num = 0;
-
-		while (flag) {
-			System.out.println("for purchase a coupon press ...................................1");
-			System.out.println("for watch all customer coupons ................................2");
-			System.out.println("for view coupons from specific category of customer press .....3");
-			System.out.println("for watch all coupons of customer until max price .............4");
-			System.out.println("for watch customer data .......................................5");
-			System.out.println("for exit press ................................................6\n");
-
-			try {
-				num = Integer.parseInt(scanner.nextLine());
-			} catch (Exception e) {
-				num = -1;
-			}
-			System.out.println();
-			switch (num) {
-			case 1: {
-				try {
-					CustomerServiceMenu.purchaseCouponMenu(service, scanner);
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 2: {
-				try {
-					List<Coupon> coupons = service.getCustomerCoupons();
-					if (coupons.isEmpty()) {
-						System.out.println("Customer do not have coupons yet \n");
-					} else {
-						for (Coupon coupon : coupons) {
-							System.out.println(coupon.toString());
-						}
-					}
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 3: {
-				try {
-					List<Coupon> coupons =service.getCustomerCoupons(CustomerServiceMenu.watchCouponByCategoryMenu(scanner));
-					for (Coupon coupon : coupons) {
-						System.out.println(coupon.toString());
-					}
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 4: {
-				try {
-					List<Coupon> coupons =service.getCustomerCoupons(CustomerServiceMenu.watchCouponByMaxPriceMenu(scanner));
-					for (Coupon coupon : coupons) {
-						System.out.println(coupon.toString());
-					}
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 5: {
-				try {
-					Customer customer = CustomerServiceMenu.getCustomerDetails(service);
-					if(customer!=null)
-						System.out.println(customer.toString());
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 6: {
-				flag = false;
-				break;
-			}
-			default:
-				System.out.println("enter numbers between 1-6\n");
-			}
-
-		}
-		System.out.println("exit customer menu\n");
-	}
 }

@@ -1,10 +1,7 @@
 package app.core.service;
 
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 
 import javax.transaction.Transactional;
 
@@ -17,7 +14,6 @@ import app.core.exception.CouponSystemException;
 import app.core.repositories.CompanyRepository;
 import app.core.repositories.CouponRepository;
 import app.core.repositories.CustomerRepository;
-import app.core.service.menu.AdminServiceMenu;
 
 @Service
 @Transactional
@@ -166,138 +162,4 @@ public class AdminService extends ClientService {
 		return customerRepository.findAll();
 	}
 
-	public static void menu(AdminService adminService, Scanner scanner) throws CouponSystemException {
-		boolean flag = true;
-		int num = 0;
-
-		while (flag) {
-			System.out.println();
-			System.out.println("for adding a company press ........1");
-			System.out.println("for update a company press ........2");
-			System.out.println("for delete company press ..........3");
-			System.out.println("for watch all companies press .....4");
-			System.out.println("for watch one company press .......5");
-			System.out.println("for adding a customer press .......6");
-			System.out.println("for update a customer press .......7");
-			System.out.println("for delete customer press .........8");
-			System.out.println("for watch all customer press ......9");
-			System.out.println("for watch one customer press ......10");
-			System.out.println("for exit press ....................11\n");
-
-			try {
-				num = Integer.parseInt(scanner.nextLine());
-			} catch (Exception e) {
-				num = -1;
-			}
-			System.out.println();
-			switch (num) {
-			case 1: {
-				try {
-					adminService.addCompany(AdminServiceMenu.addCompanyMenu(scanner));
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 2: {
-				try {
-					adminService.updateCompany(AdminServiceMenu.updateCompanyMenu(scanner));
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 3: {
-
-				try {
-					adminService.deleteCompany(AdminServiceMenu.deleteCompanyMenu(scanner));
-
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 4: {
-				try {
-					AdminServiceMenu.watchAllCompaniesMenu(adminService);
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 5: {
-				try {
-					Company company = adminService.findCompanyById(AdminServiceMenu.watchCompanyMenu(scanner));
-					if (company != null)
-						System.out.println(company.toString());
-					else
-						throw new CouponSystemException("Could not find company");
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 6: {
-				try {
-					adminService.addCustomer(AdminServiceMenu.addCustomerMenu(scanner));
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 7: {
-				try {
-					adminService.updateCustomer(AdminServiceMenu.updateCustomerMenu(adminService, scanner));
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 8: {
-				try {
-					adminService.deleteCustomer(AdminServiceMenu.deleteCustomerMenu(scanner));
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 9: {
-				try {
-					AdminServiceMenu.watchAllCustomersMenu(adminService);
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 10: {
-				try {
-					Customer customer = adminService.findCustomerById(AdminServiceMenu.watchCustomerMenu(scanner));
-					if (customer != null)
-						System.out.println(customer.toString());
-					else
-						throw new CouponSystemException("Could not find customer");
-				} catch (CouponSystemException e) {
-					System.out.println(e.getMessage() + "\n");
-				}
-				break;
-			}
-			case 11: {
-				flag = false;
-				break;
-			}
-			case 100: {// build DB this option is not visible
-				flag = false;
-				break;
-			}
-			case 300: {// delete DB this option is not visible
-				flag = false;
-				break;
-			}
-			default:
-				System.out.println("enter numbers between 1-11");
-			}
-
-		}
-		System.out.println("exit admin menu");
-	}
 }
