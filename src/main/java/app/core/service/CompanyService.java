@@ -1,23 +1,14 @@
 package app.core.service;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import app.core.entities.Company;
 import app.core.entities.Coupon;
@@ -33,52 +24,12 @@ import app.core.repositories.CustomerRepository;
 public class CompanyService extends ClientService {
 
 	private int companyID;
-	@Value("${file.upload-dir}")
-	private String storageDir;
-	private Path fileStoragePath;
 
 	@Autowired
 	public CompanyService(CompanyRepository companyRepository, CustomerRepository customerRepository,
 			CouponRepository couponRepository) {
 		super(companyRepository, customerRepository, couponRepository);
 	}
-
-	@PostConstruct
-	public void init() {
-		this.fileStoragePath = Paths.get(this.storageDir).toAbsolutePath();
-		System.out.println(this.fileStoragePath);
-
-		try {
-			// create the directory
-			Files.createDirectories(fileStoragePath);
-		} catch (IOException e) {
-			throw new RuntimeException("could not create directory", e);
-		}
-	}
-
-	public String storeFile(MultipartFile file) {
-		String fileName = file.getOriginalFilename();
-
-		System.out.println("getOriginalFilename " + file.getOriginalFilename());
-		System.out.println("getName " + file.getName());
-		System.out.println("getResource " + file.getResource());
-		System.out.println("getContentType " + file.getContentType());
-		System.out.println("getClass " + file.getClass());
-		if (fileName.contains("..")) {
-			throw new RuntimeException("file name contains ilegal caharacters");
-		}
-		// copy the file to the destination directory (if already exists replace)
-		try {
-			Path targetLocation = this.fileStoragePath.resolve(fileName);
-			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-			return "pics/" + fileName;
-		} catch (IOException e) {
-			throw new RuntimeException("storing file " + fileName + " failed", e);
-		}
-	}
-
-//	https://i.ibb.co/xXcX2r5/fluffy-Dog.jpg
-//		https://i.ibb.co/f47Qnwq/clock-And-Wall.jpg
 
 	@Override
 	public boolean login(String email, String password) {
@@ -92,9 +43,7 @@ public class CompanyService extends ClientService {
 	}
 
 	public Coupon addCoupon(Coupon coupon) throws CouponSystemException {
-		System.out.println("1111111111111111111111111111111111");
 		validateCoupon(coupon);
-		System.out.println("222222222222222222222222222222222");
 		try {
 			System.out.println("=======================addCoupon================");
 			coupon.setCompany(getCompanyDetails());
@@ -219,9 +168,7 @@ public class CompanyService extends ClientService {
 	 * @throws CouponSystemException
 	 */
 	public void validateCoupon(Coupon coupon) throws CouponSystemException {
-		System.out.println("validateCoupon");
 		coupon.convertDatesFromStringToLocalDate();
-		System.out.println("5");
 		
 		System.out.println(coupon.toString());
 
