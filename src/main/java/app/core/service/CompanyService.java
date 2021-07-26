@@ -44,11 +44,11 @@ public class CompanyService extends ClientService {
 	}
 
 	public Coupon addCoupon(CouponPayload couponPayload) throws CouponSystemException {
+		System.out.println("=======================addCoupon================");
 		System.out.println(couponPayload.toString());
 		Coupon coupon = convertCouponImage(couponPayload);
 		validateCoupon(coupon);
 		try {
-			System.out.println("=======================addCoupon================");
 			coupon.setCompany(getCompanyDetails());
 
 			if (!findByTitleAndCompanyId(coupon)) {

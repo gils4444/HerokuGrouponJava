@@ -29,7 +29,7 @@ public class CouponPayload implements Serializable {
 
 	@Override
 	public String toString() {
-		return "CouponImage [category=" + category + ", title=" + title + ", description=" + description
+		return "CouponPayload [category=" + category + ", title=" + title + ", description=" + description
 				+ ", startDate=" + startDate + ", endDate=" + endDate + ", amount=" + amount + ", price=" + price
 				+ ", image=" + imageName + "]";
 	}
