@@ -170,6 +170,7 @@ public class CompanyService extends ClientService {
 	 */
 	public void validateCoupon(Coupon coupon) throws CouponSystemException {
 		System.out.println("validateCoupon");
+		
 		coupon.convertDatesFromStringToLocalDate();
 		
 		System.out.println(coupon.toString());
