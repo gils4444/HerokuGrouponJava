@@ -77,7 +77,7 @@ public class CompanyService extends ClientService {
 			throw new CouponSystemException("There is already a coupon with the same title in this company");
 
 		Coupon otherCoupon = findCouponById(coupon.getId());
-		if (coupon != null) {
+		if (otherCoupon != null) {
 
 			if (coupon.getCompany().getId() != otherCoupon.getCompany().getId())
 				throw new CouponSystemException("you can't change the company id");
