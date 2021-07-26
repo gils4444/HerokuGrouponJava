@@ -43,6 +43,7 @@ public class CompanyService extends ClientService {
 	}
 
 	public Coupon addCoupon(Coupon coupon) throws CouponSystemException {
+		System.out.println(coupon.toString());
 		validateCoupon(coupon);
 		try {
 			System.out.println("=======================addCoupon================");
@@ -168,6 +169,7 @@ public class CompanyService extends ClientService {
 	 * @throws CouponSystemException
 	 */
 	public void validateCoupon(Coupon coupon) throws CouponSystemException {
+		System.out.println("validateCoupon");
 		coupon.convertDatesFromStringToLocalDate();
 		
 		System.out.println(coupon.toString());

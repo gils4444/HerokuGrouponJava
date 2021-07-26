@@ -84,8 +84,8 @@ public class Coupon {
 	}
 
 	public void convertDatesFromStringToLocalDate() {
-		System.out.println("1");
-		System.out.println(stringStartDate);
+		System.out.println("convertDatesFromStringToLocalDate");
+		System.out.println("stringStartDate "+stringStartDate);
 		setStartDate(LocalDate.parse(stringStartDate));
 		System.out.println("2");
 		setEndDate(LocalDate.parse(stringEndDate));
