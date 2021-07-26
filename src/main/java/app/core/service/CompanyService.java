@@ -172,6 +172,7 @@ public class CompanyService extends ClientService {
 					couponPayload.getDescription(), start, end, couponPayload.getAmount(), couponPayload.getPrice(), null);
 			if(couponPayload.getId()!=0)
 				coupon.setId(couponPayload.getId());
+			//check if coupon has image
 			if (couponPayload.getImage() != null) {
 				coupon.setImageName(couponPayload.getImage());
 				
