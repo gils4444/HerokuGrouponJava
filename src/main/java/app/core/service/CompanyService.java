@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import app.core.entities.Company;
 import app.core.entities.Coupon;
 import app.core.entities.Coupon.Category;
+import app.core.entities.CouponImage;
 import app.core.exception.CouponSystemException;
 import app.core.repositories.CompanyRepository;
 import app.core.repositories.CouponRepository;
@@ -159,6 +160,41 @@ public class CompanyService extends ClientService {
 	public void setCompanyID(int companyID) {
 		this.companyID = companyID;
 	}
+	
+	
+	public Coupon convertCouponImage(CouponImage couponImage) throws CouponSystemException {
+		try {
+			System.out.println(couponImage);
+			LocalDate start = LocalDate.parse(couponImage.getStartDate().toString());
+			LocalDate end = LocalDate.parse(couponImage.getEndDate().toString());
+			Coupon coupon = new Coupon(couponImage.getCategory(), couponImage.getTitle(),
+					couponImage.getDescription(), start, end, couponImage.getAmount(), couponImage.getPrice(), null);
+			if(couponImage.getId()!=0)
+				coupon.setId(couponImage.getId());
+			if (couponImage.getImage() != null) {
+				coupon.setImageName(couponImage.getImage());
+				
+				// check if coupon is added or updated: add id = 0 | updated id != 0
+
+			// coupon is being added:
+			} else if (coupon.getId() == 0) {
+				coupon.setImageName("no_image");
+			// coupon is being updated:
+			} else {
+				Optional<Coupon> opt = couponRepository.findById(coupon.getId());
+				if (opt.isPresent()) {
+					coupon.setImageName(opt.get().getImageName());
+				}
+			}
+			System.out.println(coupon);
+			return coupon;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new CouponSystemException("convertCouponImage failed: " + e);
+		}
+	}
+
+
 
 	/**
 	 * check if the values of the coupon are legal amount bigger than one , price
@@ -171,9 +207,6 @@ public class CompanyService extends ClientService {
 	public void validateCoupon(Coupon coupon) throws CouponSystemException {
 		System.out.println("validateCoupon");
 		
-		coupon.convertDatesFromStringToLocalDate();
-		System.out.println("after convert date");
-		System.out.println(coupon.toString());
 
 		if (coupon.getPrice() < 0) {
 			throw new CouponSystemException("price cannot be less than zero");

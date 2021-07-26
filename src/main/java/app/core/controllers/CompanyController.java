@@ -51,8 +51,6 @@ public class CompanyController {
 			if (!recieveToken(token))
 				throw new Exception("token is not validated ");
 			System.out.println(coupon.toString());
-			System.out.println("getStringStartDate "+coupon.getStringStartDate());
-			System.out.println("getStringEndDate "+coupon.getStringEndDate());
 			System.out.println("getImageName "+coupon.getImageName());
 			return service.addCoupon(coupon);
 		} catch (Exception e) {
