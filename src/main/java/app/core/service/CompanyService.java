@@ -172,7 +172,7 @@ public class CompanyService extends ClientService {
 		System.out.println("validateCoupon");
 		
 		coupon.convertDatesFromStringToLocalDate();
-		
+		System.out.println("after convert date");
 		System.out.println(coupon.toString());
 
 		if (coupon.getPrice() < 0) {
