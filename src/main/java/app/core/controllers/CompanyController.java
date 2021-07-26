@@ -44,7 +44,7 @@ public class CompanyController {
 		this.ctx = ctx;
 	}
 
-	@PostMapping("/add/coupon")
+	@PostMapping(path="/add/coupon",consumes = {"multipart/form-data" } )
 	public Coupon addCoupon(@ModelAttribute Coupon coupon, BindingResult result,
 			@RequestHeader String token) {
 		try {
@@ -122,7 +122,7 @@ public class CompanyController {
 		}
 	}
 
-	@PutMapping("/update/coupon")
+	@PutMapping(path="/update/coupon",consumes = {"multipart/form-data" })
 	public Coupon updateCoupon(@ModelAttribute Coupon coupon, BindingResult result, @RequestHeader String token) {
 		try {
 			if (!recieveToken(token))
