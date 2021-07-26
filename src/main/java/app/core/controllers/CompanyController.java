@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,20 +13,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import app.core.entities.Company;
 import app.core.entities.Coupon;
+import app.core.entities.CouponPayload;
 import app.core.entities.Coupon.Category;
 import app.core.exception.CouponSystemException;
 import app.core.service.CompanyService;
-import app.core.service.CustomerService;
 import app.core.utilities.JwtUtil;
 
 @RestController
@@ -45,14 +41,14 @@ public class CompanyController {
 	}
 
 	@PostMapping(path="/add/coupon",consumes = {"multipart/form-data" } )
-	public Coupon addCoupon(@ModelAttribute Coupon coupon, BindingResult result,
+	public Coupon addCoupon(@ModelAttribute CouponPayload couponPayload, BindingResult result,
 			@RequestHeader String token) {
 		try {
 			if (!recieveToken(token))
 				throw new Exception("token is not validated ");
-			System.out.println(coupon.toString());
-			System.out.println("getImageName "+coupon.getImageName());
-			return service.addCoupon(coupon);
+			System.out.println(couponPayload.toString());
+			System.out.println("getImageName "+couponPayload.getImage());
+			return service.addCoupon(couponPayload);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
@@ -125,11 +121,11 @@ public class CompanyController {
 	}
 
 	@PutMapping(path="/update/coupon",consumes = {"multipart/form-data" })
-	public Coupon updateCoupon(@ModelAttribute Coupon coupon, BindingResult result, @RequestHeader String token) {
+	public Coupon updateCoupon(@ModelAttribute CouponPayload couponPayload, BindingResult result, @RequestHeader String token) {
 		try {
 			if (!recieveToken(token))
 				throw new Exception("token is not validated ");
-			return service.updateCoupon(coupon);
+			return service.updateCoupon(couponPayload);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}

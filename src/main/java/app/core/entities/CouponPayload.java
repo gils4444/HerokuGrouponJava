@@ -3,7 +3,7 @@ package app.core.entities;
 import java.io.Serializable;
 import app.core.entities.Coupon.Category;
 
-public class CouponImage implements Serializable {
+public class CouponPayload implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -34,10 +34,10 @@ public class CouponImage implements Serializable {
 				+ ", image=" + imageName + "]";
 	}
 
-	public CouponImage() {
+	public CouponPayload() {
 	}
 
-	public CouponImage(Category category, String title, String description, String startDate, String endDate,
+	public CouponPayload(Category category, String title, String description, String startDate, String endDate,
 			int amount, double price, Company company) {
 		this.category = category;
 		this.title = title;

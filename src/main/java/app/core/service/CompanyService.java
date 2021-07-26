@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import app.core.entities.Company;
 import app.core.entities.Coupon;
 import app.core.entities.Coupon.Category;
-import app.core.entities.CouponImage;
+import app.core.entities.CouponPayload;
 import app.core.exception.CouponSystemException;
 import app.core.repositories.CompanyRepository;
 import app.core.repositories.CouponRepository;
@@ -43,8 +43,9 @@ public class CompanyService extends ClientService {
 
 	}
 
-	public Coupon addCoupon(Coupon coupon) throws CouponSystemException {
-		System.out.println(coupon.toString());
+	public Coupon addCoupon(CouponPayload couponPayload) throws CouponSystemException {
+		System.out.println(couponPayload.toString());
+		Coupon coupon = convertCouponImage(couponPayload);
 		validateCoupon(coupon);
 		try {
 			System.out.println("=======================addCoupon================");
@@ -53,7 +54,6 @@ public class CompanyService extends ClientService {
 			if (!findByTitleAndCompanyId(coupon)) {
 				Optional<Company> opt = companyRepository.findById(companyID);
 				if (opt.isPresent()) {
-
 					opt.get().addCoupon(coupon);
 					Coupon couponFromDB = couponRepository.findByTitleAndCompanyId(coupon.getTitle(), companyID);
 					return couponFromDB;
@@ -67,7 +67,8 @@ public class CompanyService extends ClientService {
 		}
 	}
 
-	public Coupon updateCoupon(Coupon coupon) throws CouponSystemException {
+	public Coupon updateCoupon(CouponPayload couponPayload) throws CouponSystemException {
+		Coupon coupon = convertCouponImage(couponPayload);
 		validateCoupon(coupon);
 
 		coupon.setCompany(getCompanyDetails());
@@ -162,17 +163,17 @@ public class CompanyService extends ClientService {
 	}
 	
 	
-	public Coupon convertCouponImage(CouponImage couponImage) throws CouponSystemException {
+	public Coupon convertCouponImage(CouponPayload couponPayload) throws CouponSystemException {
 		try {
-			System.out.println(couponImage);
-			LocalDate start = LocalDate.parse(couponImage.getStartDate().toString());
-			LocalDate end = LocalDate.parse(couponImage.getEndDate().toString());
-			Coupon coupon = new Coupon(couponImage.getCategory(), couponImage.getTitle(),
-					couponImage.getDescription(), start, end, couponImage.getAmount(), couponImage.getPrice(), null);
-			if(couponImage.getId()!=0)
-				coupon.setId(couponImage.getId());
-			if (couponImage.getImage() != null) {
-				coupon.setImageName(couponImage.getImage());
+			System.out.println(couponPayload);
+			LocalDate start = LocalDate.parse(couponPayload.getStartDate().toString());
+			LocalDate end = LocalDate.parse(couponPayload.getEndDate().toString());
+			Coupon coupon = new Coupon(couponPayload.getCategory(), couponPayload.getTitle(),
+					couponPayload.getDescription(), start, end, couponPayload.getAmount(), couponPayload.getPrice(), null);
+			if(couponPayload.getId()!=0)
+				coupon.setId(couponPayload.getId());
+			if (couponPayload.getImage() != null) {
+				coupon.setImageName(couponPayload.getImage());
 				
 				// check if coupon is added or updated: add id = 0 | updated id != 0
 
@@ -186,7 +187,7 @@ public class CompanyService extends ClientService {
 					coupon.setImageName(opt.get().getImageName());
 				}
 			}
-			System.out.println(coupon);
+			System.out.println(coupon.toString());
 			return coupon;
 		} catch (Exception e) {
 			e.printStackTrace();
