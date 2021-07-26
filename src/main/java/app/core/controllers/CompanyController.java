@@ -20,7 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import app.core.entities.Company;
 import app.core.entities.Coupon;
-import app.core.entities.CouponPayload;
 import app.core.entities.Coupon.Category;
 import app.core.exception.CouponSystemException;
 import app.core.service.CompanyService;
@@ -40,15 +39,15 @@ public class CompanyController {
 		this.ctx = ctx;
 	}
 
-	@PostMapping(path="/add/coupon",consumes = {"multipart/form-data" } )
-	public Coupon addCoupon(@ModelAttribute CouponPayload couponPayload, BindingResult result,
+	@PostMapping("/add/coupon")
+	public Coupon addCoupon(@ModelAttribute Coupon coupon, BindingResult result,
 			@RequestHeader String token) {
 		try {
 			if (!recieveToken(token))
 				throw new Exception("token is not validated ");
-			System.out.println("----------------------couponPayload "+couponPayload.toString());
-			System.out.println("getImageName "+couponPayload.getImage());
-			return service.addCoupon(couponPayload);
+			System.out.println("getStartDate "+coupon.getStartDate());
+			System.out.println("getEndDate "+coupon.getEndDate());
+			return service.addCoupon(coupon);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
@@ -120,12 +119,12 @@ public class CompanyController {
 		}
 	}
 
-	@PutMapping(path="/update/coupon",consumes = {"multipart/form-data" })
-	public Coupon updateCoupon(@ModelAttribute CouponPayload couponPayload, BindingResult result, @RequestHeader String token) {
+	@PutMapping("/update/coupon")
+	public Coupon updateCoupon(@ModelAttribute Coupon coupon, BindingResult result, @RequestHeader String token) {
 		try {
 			if (!recieveToken(token))
 				throw new Exception("token is not validated ");
-			return service.updateCoupon(couponPayload);
+			return service.updateCoupon(coupon);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}

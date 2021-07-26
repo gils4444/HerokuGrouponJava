@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import app.core.entities.Company;
 import app.core.entities.Coupon;
 import app.core.entities.Coupon.Category;
-import app.core.entities.CouponPayload;
 import app.core.exception.CouponSystemException;
 import app.core.repositories.CompanyRepository;
 import app.core.repositories.CouponRepository;
@@ -43,10 +42,9 @@ public class CompanyService extends ClientService {
 
 	}
 
-	public Coupon addCoupon(CouponPayload couponPayload) throws CouponSystemException {
+	public Coupon addCoupon(Coupon coupon) throws CouponSystemException {
 		System.out.println("=======================addCoupon================");
-		System.out.println(couponPayload.toString());
-		Coupon coupon = convertCouponImage(couponPayload);
+		System.out.println(coupon.toString());
 		validateCoupon(coupon);
 		try {
 			coupon.setCompany(getCompanyDetails());
@@ -67,8 +65,8 @@ public class CompanyService extends ClientService {
 		}
 	}
 
-	public Coupon updateCoupon(CouponPayload couponPayload) throws CouponSystemException {
-		Coupon coupon = convertCouponImage(couponPayload);
+	public Coupon updateCoupon(Coupon coupon) throws CouponSystemException {
+		
 		validateCoupon(coupon);
 
 		coupon.setCompany(getCompanyDetails());
@@ -161,42 +159,41 @@ public class CompanyService extends ClientService {
 	public void setCompanyID(int companyID) {
 		this.companyID = companyID;
 	}
-	
-	
-	public Coupon convertCouponImage(CouponPayload couponPayload) throws CouponSystemException {
-		try {
-			System.out.println(couponPayload);
-			LocalDate start = LocalDate.parse(couponPayload.getStartDate().toString());
-			LocalDate end = LocalDate.parse(couponPayload.getEndDate().toString());
-			Coupon coupon = new Coupon(couponPayload.getCategory(), couponPayload.getTitle(),
-					couponPayload.getDescription(), start, end, couponPayload.getAmount(), couponPayload.getPrice(), null);
-			if(couponPayload.getId()!=0)
-				coupon.setId(couponPayload.getId());
-			//check if coupon has image
-			if (couponPayload.getImage() != null) {
-				coupon.setImageName(couponPayload.getImage());
-				
-				// check if coupon is added or updated: add id = 0 | updated id != 0
 
-			// coupon is being added:
-			} else if (coupon.getId() == 0) {
-				coupon.setImageName("no_image");
-			// coupon is being updated:
-			} else {
-				Optional<Coupon> opt = couponRepository.findById(coupon.getId());
-				if (opt.isPresent()) {
-					coupon.setImageName(opt.get().getImageName());
-				}
-			}
-			System.out.println(coupon.toString());
-			return coupon;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new CouponSystemException("convertCouponImage failed: " + e);
-		}
-	}
-
-
+//	public Coupon convertCouponImage(CouponPayload couponPayload) throws CouponSystemException {
+//		try {
+//			System.out.println("convertCouponImage");
+//			System.out.println("couponPayload " + couponPayload);
+//			LocalDate start = LocalDate.parse(couponPayload.getStartDate().toString());
+//			LocalDate end = LocalDate.parse(couponPayload.getEndDate().toString());
+//			Coupon coupon = new Coupon(couponPayload.getCategory(), couponPayload.getTitle(),
+//					couponPayload.getDescription(), start, end, couponPayload.getAmount(), couponPayload.getPrice(),
+//					null);
+//			if (couponPayload.getId() != 0)
+//				coupon.setId(couponPayload.getId());
+//			// check if coupon has image
+//			if (couponPayload.getImage() != null) {
+//				coupon.setImageName(couponPayload.getImage());
+//
+//				// check if coupon is added or updated: add id = 0 | updated id != 0
+//
+//				// coupon is being added:
+//			} else if (coupon.getId() == 0) {
+//				coupon.setImageName("no_image");
+//				// coupon is being updated:
+//			} else {
+//				Optional<Coupon> opt = couponRepository.findById(coupon.getId());
+//				if (opt.isPresent()) {
+//					coupon.setImageName(opt.get().getImageName());
+//				}
+//			}
+//			System.out.println(coupon.toString());
+//			return coupon;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			throw new CouponSystemException("convertCouponImage failed: " + e);
+//		}
+//	}
 
 	/**
 	 * check if the values of the coupon are legal amount bigger than one , price
@@ -208,7 +205,9 @@ public class CompanyService extends ClientService {
 	 */
 	public void validateCoupon(Coupon coupon) throws CouponSystemException {
 		System.out.println("validateCoupon");
-		
+		coupon.convertDatesFromStringToLocalDate();
+		System.out.println("aftert convertDatesFromStringToLocalDate");
+		System.out.println(coupon);
 
 		if (coupon.getPrice() < 0) {
 			throw new CouponSystemException("price cannot be less than zero");

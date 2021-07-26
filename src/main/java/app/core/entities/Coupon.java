@@ -45,6 +45,9 @@ public class Coupon {
 	private double price;
 
 	private String imageName;
+	private String stringEndDate;
+	private String stringStartDate;
+	
 	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "company_id") // this class (Coupon) is the relationship owner
 	private Company company;
@@ -81,7 +84,28 @@ public class Coupon {
 		this.customers.add(customer);
 	}
 
+	public void convertDatesFromStringToLocalDate() {
+		System.out.println("stringStartDate "+stringStartDate);
+		setStartDate(LocalDate.parse(stringStartDate));
+		setEndDate(LocalDate.parse(stringEndDate));
+	}
 
+
+	public String getStringEndDate() {
+		return stringEndDate;
+	}
+
+	public void setStringEndDate(String stringEndDate) {
+		this.stringEndDate = stringEndDate;
+	}
+
+	public String getStringStartDate() {
+		return stringStartDate;
+	}
+
+	public void setStringStartDate(String stringStartDate) {
+		this.stringStartDate = stringStartDate;
+	}
 
 	public int getId() {
 		return id;
