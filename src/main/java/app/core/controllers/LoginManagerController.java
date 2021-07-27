@@ -32,7 +32,7 @@ public class LoginManagerController {
 		try {
 			return manager.login(email, password, type);
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "asdasdasd");
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
 		}
 	}
 	
