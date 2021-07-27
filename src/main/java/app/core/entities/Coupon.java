@@ -17,6 +17,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import org.springframework.data.annotation.Transient;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -45,7 +47,9 @@ public class Coupon {
 	private double price;
 
 	private String imageName;
+	@Transient
 	private String stringEndDate;
+	@Transient
 	private String stringStartDate;
 	
 	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
