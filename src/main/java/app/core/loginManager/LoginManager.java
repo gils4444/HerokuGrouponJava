@@ -49,7 +49,6 @@ public class LoginManager {
 				service = null;
 				throw new CouponSystemException("Wrong Details");
 			}
-			System.out.println("================================================= ");
 			return returnUserDetails(password, email, type, 0,"Admin");
 		}
 		case COMPANY: {
